@@ -1,5 +1,8 @@
 import logo from './logo.svg';
 import { useState } from 'react';
+import { InputTodo } from './components/InputTodo';
+import { InCompleteTodos } from './components/InCompleteTodos';
+import { CompleteTodos } from './components/CompleteTodos';
 import './App.css';
 
 // Reactのマークアップのやり方（これ描きやすい）
@@ -60,13 +63,34 @@ export const Todo = () =>{
     setTodoText("");
   }
 
+  const isMaxLiimitIncompleteTodos = incompleteTodos.length >= 5;
+
   return (
     <>
-      <div className = "input-area">
+      {/* <div className = "input-area">
         <input placeholder='TODOを入力' value={todoText} onChange={onChangeTodoText}/>
         <button onClick={onClickAdd}>追加</button>
-      </div>
-      <div className = "incomplete-area">
+      </div> */}
+      <InputTodo 
+        todoText={todoText} 
+        onChange={onChangeTodoText} 
+        onClick={onClickAdd}
+        disabled={isMaxLiimitIncompleteTodos}
+      />
+      {/* 5個以上ある時は追加できないようにする機能 */}
+      {/* 左がTrueの時は右を実行するのが&&の役割 */}
+      {isMaxLiimitIncompleteTodos && (     
+         <p style={{color: "red"}}>
+          登録できるTODOは5個までです.消化してください．
+        </p>
+      )}
+
+      <InCompleteTodos 
+        todos={incompleteTodos}
+        onClickComplete={onClickComplete}
+        onClickDelete={onClickDelete}
+      />
+      {/* <div className = "incomplete-area">
         <p className = 'title'>未完了のTODO</p>
         <ul>
           {incompleteTodos.map((todo, index) => {
@@ -82,7 +106,25 @@ export const Todo = () =>{
             )
           })}
         </ul>
-      </div>
+      </div> */}
+      <CompleteTodos 
+        todos={completeTodos} 
+        onClickBack={onClickBack}
+      />
+      {/* <div className = "complete-area">
+        <p className = 'title'>完了のTODO</p>
+        <ul>
+          {completeTodos.map((todo, index) => {
+            return (
+              <li key={todo}>
+                <div className = "list-row">
+                    <p className = "todo-item">{todo}</p>
+                    <button onClick={() => onClickBack(index)}>戻す</button>
+                </div>
+              </li>              
+            )
+          })}
+        </ul>
       <div className = "complete-area">
           <p className = 'title'>完了のTODO</p>
         <ul>
@@ -95,7 +137,7 @@ export const Todo = () =>{
               </li>
           ))}
         </ul>
-      </div>
+      </div>} */}
     </>
   );
 }
@@ -103,3 +145,7 @@ export const Todo = () =>{
 // export default App;
 // Reactは宣言的なプログラミング（Reactの方が圧倒的に保守性が高い）
 // javascriptは手続き的な言語（主語と述語的な）（IDとかおって作っていく）
+// Reactを使った方がコード量が減って楽やし，保守性が高い
+// Reactはコンポーネントはスタイルだけグローバルである
+// できれば，コンポーネントないでスタイルが完結しているものがいいのだ
+// なので，CSS in JSというものがある
